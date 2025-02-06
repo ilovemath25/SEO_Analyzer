@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <script src="https://kit.fontawesome.com/7006f68f03.js" crossorigin="anonymous"></script>
+   <title>SEO Analyzer</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+</head>
+<body>
+   <div class="base-container">
+      {% include "header.html" %}
+
+      {% block content %}
+      {% endblock content %}
+   </div>
+
+   {% include "footer.html" %}
+
+</body>
+</html>

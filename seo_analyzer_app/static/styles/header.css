@@ -1,0 +1,33 @@
+header {
+   display: flex;
+   justify-content: space-between;
+}
+nav {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+.logo {
+   height: 50px;
+   margin: 10px;
+}
+nav .nav-menu {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 0 30px;
+   height: 100%;
+   text-decoration: none;
+   color: #000;
+}
+nav .nav-menu:hover{
+   background-color: #00000010;
+   color: #ffffff;
+   cursor: pointer;
+}
+.theme {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 5px;
+}

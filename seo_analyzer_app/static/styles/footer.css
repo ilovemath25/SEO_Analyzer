@@ -1,0 +1,36 @@
+footer{
+   position: relative;
+   height: 200px;
+}
+footer section{
+   padding: 30px;
+   background-color: #98D8EF;
+}
+.sosmed{
+   display: flex;
+   justify-content: center;
+}
+.sosmed i{
+   color: white;
+   margin: 10px;
+   font-size: 20px;
+   transition: color 0.3s ease;
+}
+footer p{
+   color: white;
+   margin: 10px;
+   display: flex;
+   justify-content: center;
+}
+.sosmed i:hover{
+   color: #000;
+}
+@media screen and (max-width:900px){
+   footer{margin-bottom: 51px;}
+}
+@media screen and (max-width:500px){
+   footer{margin-bottom: 51px;}
+}
+@media screen and (max-width:350px){
+   footer{margin-bottom: 51px;}
+}
