@@ -10,5 +10,56 @@
          <button type="submit">Analyze</button>
       </form>
    </section>
+   <section class="section-container">
+      <h3>Recent Searches</h3>
+      <div class="table-container">
+         <table>
+            <thead>
+               <tr>
+                  <th>URL</th>
+                  <th>Score</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% if recent_searches %}
+                  {% for search in recent_searches %}
+                  <tr>
+                     <td>{{ search.url }}</td>
+                     <td>{{ search.score }}</td>
+                  </tr>
+                  {% endfor %}
+               {% else %}
+                  <tr>
+                     <td colspan="2">No recent searches</td>
+                  </tr>
+               {% endif %}
+            </tbody>
+         </table>
+      </div>
+   </section>
+   <section class="section-container">
+      <h3>SEO Analyzer</h3>
+      <div class="description-container">
+         <p>SEO Analyzer is a tool that helps you analyze your website and gives you a score based on the SEO best practices.</p>
+         <hr>
+         <p>What is SEO?</p>
+         <p>SEO stands for Search Engine Optimization. It is the process of optimizing your website to get organic traffic from search engines like Google, Bing, Yahoo, etc.</p>
+         <hr>
+         <p>Features:</p>
+         <ul class="description-list">
+            <li>Basic SEO checks (title, meta description, headers, etc.)</li>
+            <li>Keyword rank checking (Google search position)</li>
+            <li>SEO score calculation (on-page SEO, keyword ranking, technical SEO)</li>
+            <li>Personalized SEO suggestions based on best practices</li>
+         </ul>
+         <hr>
+         <p>Usages:</p>
+         <ul class="description-list">
+            <li>Enter the URL of the website you want to analyze</li>
+            <li>Click on the "Analyze" button</li>
+            <li>Get the SEO score and personalized suggestions</li>
+         </ul>
+      </div>
+   </section>
 </main>
 {% endblock content %}

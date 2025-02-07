@@ -24,6 +24,7 @@ nav .nav-menu:hover{
    background-color: #00000010;
    color: #ffffff;
    cursor: pointer;
+   transition: all 0.2s;
 }
 .theme {
    display: flex;

@@ -1,10 +1,11 @@
 footer{
    position: relative;
    height: 200px;
+   margin-top: 50px;
 }
 footer section{
    padding: 30px;
-   background-color: #98D8EF;
+   background-color: #489ce0;
 }
 .sosmed{
    display: flex;
@@ -14,7 +15,7 @@ footer section{
    color: white;
    margin: 10px;
    font-size: 20px;
-   transition: color 0.3s ease;
+   transition: all 0.3s;
 }
 footer p{
    color: white;
@@ -23,7 +24,7 @@ footer p{
    justify-content: center;
 }
 .sosmed i:hover{
-   color: #000;
+   color: #9ecdeb;
 }
 @media screen and (max-width:900px){
    footer{margin-bottom: 51px;}
