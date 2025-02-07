@@ -80,3 +80,7 @@
    gap: 10px;
    margin-left: 20px;
 }
+.error-message{
+   color: red;
+   font-size: 18px;
+}

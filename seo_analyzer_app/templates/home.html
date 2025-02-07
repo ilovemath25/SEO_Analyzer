@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
 <main>
    <section class="section-container">
       <h3>Input link down below</h3>
-      <form method="post" class="form-container">
+      <form method="post" class="form-container" action="{{ url_for('analyze.analyze_url') }}">
          <label for="url">URL:</label>
          <input type="text" id="url" name="url" placeholder="https://example.com">
          <button type="submit">Analyze</button>
       </form>
+      {% if error %}
+      <p class="error-message">{{ error }}</p>
+      {% endif %}
    </section>
    <section class="section-container">
       <h3>Recent Searches</h3>
