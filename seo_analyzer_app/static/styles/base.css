@@ -20,3 +20,25 @@ html, body{
    margin: 0 auto;
    flex: 1;
 }
+.section-container{
+   background-color: #F5EFE7;
+   padding: 20px 15%;
+   border-radius: 10px;
+   margin-bottom: 20px;
+}
+.section-container h3{
+   font-size: 20px;
+   margin-bottom: 20px;
+}
+.description-container{
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   margin-bottom: 20px
+}
+.description-list{
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   margin-left: 20px;
+}
