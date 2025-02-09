@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/loading.css') }}">
+<main>
+   <section class="section-container">
+      <div class="form-container">
+         <label for="url">URL:</label>
+         <input type="text" id="url" name="url" placeholder="{{ url }}" readonly>
+         <button type="submit" disabled>Analyze</button>
+      </div>
+      <hr>
+      <div class="task-container task1">
+         <div class="circle-status loading-status"></div>
+         <p>On page SEO analysis</p>
+      </div>
+   </section>
+</main>
+<script src="{{ url_for('static', filename='scripts/loading.js') }}"></script>
+{% endblock content %}

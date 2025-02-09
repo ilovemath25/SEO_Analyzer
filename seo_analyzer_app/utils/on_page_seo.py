@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import requests
 import re
+import json
 
 def analyze_elements(url):
    try:
@@ -28,12 +29,14 @@ def analyze_elements(url):
       ]
       score = [element["score"] for element in [title, meta_description, headers, images, anchors]]
       total_score = (sum(score) / 50) * 100
-      return {
+      result = {
          "total_score": round(total_score, 2),
          "detailed_scores": score,
          "feedback": feedback
       }
-   except: return {"error": "Failed to fetch the webpage."}
+      with open("./seo_analyzer_app/utils/on_page_seo.json", "w", encoding="utf-8") as f: json.dump(result, f, indent=3, ensure_ascii=False)
+      return result
+   except Exception as e: return {"error": f"Failed to fetch the webpage: {str(e)}"}
    finally:
       if driver: driver.quit()
 def analyze_title(soup):
