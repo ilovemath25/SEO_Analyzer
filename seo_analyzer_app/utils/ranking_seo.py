@@ -1,9 +1,10 @@
-from sentence_transformers import SentenceTransformer
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from sentence_transformers import SentenceTransformer
+from keybert import KeyBERT
 from bs4 import BeautifulSoup
 import asyncio
 import os
@@ -32,7 +33,7 @@ def extract_url(google_url):
    match = re.search(r"/url\?q=(https?://[^&]+)", google_url)
    return match.group(1) if match else None
 
-def fetch_page(url):
+def get_chrome_options():
    options = Options()
    options.add_argument("--headless")
    options.add_argument("--no-sandbox")
@@ -41,6 +42,10 @@ def fetch_page(url):
    options.add_argument("disable-infobars")
    options.add_argument("--disable-blink-features=AutomationControlled")
    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+   return options
+   
+def fetch_page(url):
+   options = get_chrome_options()
    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
    driver.get(url)
    WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
@@ -63,17 +68,30 @@ async def fetch_google_result(keyword):
 async def check_rank(keywords, url):
    tasks = [fetch_google_result(keyword) for keyword in keywords]
    results = await asyncio.gather(*tasks)
+   positions = {}
    for i, keyword in enumerate(keywords):
       page_results = results[i]
-      if any(url in result for result in page_results):
-         position = next((i + 1 for i, result in enumerate(page_results) if url in result), None)
-         print(f"'{url}' ranks at position {position} for '{keyword}'")
-      else:
-         print(f"'{url}' does not rank in the top {len(page_results)} for '{keyword}'")
+      if any(url in result for result in page_results): position = next((i + 1 for i, result in enumerate(page_results) if url in result), None)
+      else: position = None
+      positions[keyword] = position
+   return position
 
 def analyze_rank(url):
-   keywords = ["ilovemath25"]
-   asyncio.run(check_rank(keywords, url))
-   
+   options = get_chrome_options()
+   driver = webdriver.Chrome(options=options)
+   driver.get(url)
+   WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+   soup = BeautifulSoup(driver.page_source, "html.parser")
+   title = soup.find("title")
+   meta_desc =  soup.find("meta", attrs={"name": "description"})
+   text = title.text if title else ""
+   text += " " + meta_desc.get("content", "") if meta_desc else ""
+   text += " " + soup.get_text(separator=" ", strip=True)
+   model = load_model("./seo_analyzer_app/models/fine_tuned_seo_model")
+   kw_model = KeyBERT(model)
+   keywords = get_keyword(text, kw_model, 10)
+   print(keywords)
+   # asyncio.run(check_rank(keywords, url))
+
 if __name__=='__main__':
-   analyze_rank("ilovemath25.github.io")
+   analyze_rank("https://ilovemath25.github.io")
