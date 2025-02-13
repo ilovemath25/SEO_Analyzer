@@ -28,8 +28,8 @@ def get_keyword(text, model, top_n):
       diversity = 0.3,
       top_n = top_n
    )
-   # return {kw.replace("_", " "):score for kw, score in keywords}
-   return [kw.replace("_", " ") for kw, _ in keywords]
+   return {kw.replace("_", " "):score for kw, score in keywords}
+   # return [kw.replace("_", " ") for kw, _ in keywords]
 
 def extract_url(google_url):
    match = re.search(r"/url\?q=(https?://[^&]+)", google_url)
@@ -99,7 +99,7 @@ def analyze_rank(url):
    model = load_model("./seo_analyzer_app/models/fine_tuned_seo_model")
    kw_model = KeyBERT(model)
    keywords = get_keyword(text, kw_model, 10)
-   keyword_frequencies = {kw: get_keyword_frequency(kw) for kw in keywords}
+   keyword_frequencies = {kw: get_keyword_frequency(kw) for kw, _ in keywords.items()}
    keywords = sorted(keyword_frequencies.items(), key=lambda x: x[1], reverse=True)
    keywords = [kw[0] for kw in keywords]
    positions = asyncio.run(check_rank(keywords, url))
