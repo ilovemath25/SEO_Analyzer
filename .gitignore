@@ -110,3 +110,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# google
+.google-cookie
+
+# json
+on_page_seo.json
+ranking_seo.json
