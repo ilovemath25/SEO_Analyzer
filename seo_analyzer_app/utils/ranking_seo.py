@@ -11,6 +11,44 @@ import json
 import os
 import re
 
+def analyze_rank(url):
+   options = webdriver.ChromeOptions()
+   options.add_argument("--headless")
+   options.add_argument("--log-level=3")
+   options.add_argument("--disable-gpu")
+   options.add_argument("--disable-dev-shm-usage")
+   driver = webdriver.Chrome(options=options)
+   driver.get(url)
+   WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+   soup = BeautifulSoup(driver.page_source, "html.parser")
+   title = soup.find("title")
+   meta_desc =  soup.find("meta", attrs={"name": "description"})
+   text = title.text if title else ""
+   text += " " + meta_desc.get("content", "") if meta_desc else ""
+   text += " " + soup.get_text(separator=" ", strip=True)
+   model = load_model("./seo_analyzer_app/models/fine_tuned_seo_model")
+   kw_model = KeyBERT(model)
+   keywords = get_keyword(text, kw_model, 10)
+   keyword_frequencies = {kw: get_keyword_frequency(kw) for kw, _ in keywords.items()}
+   keywords = sorted(keyword_frequencies.items(), key=lambda x: x[1], reverse=True)
+   keywords = [kw[0] for kw in keywords]
+   positions, notes = check_rank(keywords, url)
+   scores = []
+   for keyword, rank in positions.items():
+      score = 0.4 if rank is None else max(10 - ((rank - 1) * 0.4), 1)
+      scores.append([keyword, rank, score])
+   total_score = (
+      sum(score[2] for score in scores[:3]) * 1.25 +
+      sum(score[2] for score in scores[3:6]) * 1.10 +
+      sum(score[2] for score in scores[6:]) * 0.90
+   )
+   result = {
+      "total_score": round(total_score, 2),
+      "feedback": notes
+   }
+   with open("./seo_analyzer_app/utils/ranking_seo.json", "w", encoding="utf-8") as f: json.dump(result, f, indent=3, ensure_ascii=False)
+   return result
+
 def load_model(path):
    model_path = path
    if os.path.exists(model_path): return SentenceTransformer(model_path)
@@ -54,44 +92,3 @@ def check_rank(keywords, url):
          if rank: notes.append(f"Your website ranks #{rank} for keyword '{keyword}'")
          else: notes.append("")
    return positions, notes
-
-def analyze_rank(url):
-   options = webdriver.ChromeOptions()
-   options.add_argument("--headless")
-   options.add_argument("--log-level=3")
-   options.add_argument("--disable-gpu")
-   options.add_argument("--disable-dev-shm-usage")
-   driver = webdriver.Chrome(options=options)
-   driver.get(url)
-   WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-   soup = BeautifulSoup(driver.page_source, "html.parser")
-   title = soup.find("title")
-   meta_desc =  soup.find("meta", attrs={"name": "description"})
-   text = title.text if title else ""
-   text += " " + meta_desc.get("content", "") if meta_desc else ""
-   text += " " + soup.get_text(separator=" ", strip=True)
-   model = load_model("./seo_analyzer_app/models/fine_tuned_seo_model")
-   kw_model = KeyBERT(model)
-   keywords = get_keyword(text, kw_model, 10)
-   keyword_frequencies = {kw: get_keyword_frequency(kw) for kw, _ in keywords.items()}
-   keywords = sorted(keyword_frequencies.items(), key=lambda x: x[1], reverse=True)
-   keywords = [kw[0] for kw in keywords]
-   positions, notes = check_rank(keywords, url)
-   scores = []
-   for keyword, rank in positions.items():
-      score = 0.4 if rank is None else max(10 - ((rank - 1) * 0.4), 1)
-      scores.append([keyword, rank, score])
-   total_score = (
-      sum(score[2] for score in scores[:3]) * 1.25 +
-      sum(score[2] for score in scores[3:6]) * 1.10 +
-      sum(score[2] for score in scores[6:]) * 0.90
-   )
-   result = {
-      "total_score": round(total_score, 2),
-      "feedback": notes
-   }
-   with open("./seo_analyzer_app/utils/ranking_seo.json", "w", encoding="utf-8") as f: json.dump(result, f, indent=3, ensure_ascii=False)
-   return result
-
-if __name__=='__main__':
-   print(analyze_rank("https://ilovemath25.github.io"))
