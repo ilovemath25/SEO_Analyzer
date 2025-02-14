@@ -8,7 +8,6 @@ import concurrent.futures
 import requests
 import random
 import json
-import math
 import os
 import re
 
@@ -53,7 +52,7 @@ def check_rank(keywords, url):
          keyword, rank = future.result()
          positions[keyword] = rank
          if rank: notes.append(f"Your website ranks #{rank} for keyword '{keyword}'")
-         else: notes.append(None)
+         else: notes.append("")
    return positions, notes
 
 def analyze_rank(url):
