@@ -4,6 +4,7 @@ from seo_analyzer_app.utils.ranking_seo import analyze_rank
 from seo_analyzer_app.utils.technical_seo import analyze_technical
 import requests
 import threading
+import json
 import os
 
 analyze = Blueprint('analyze', __name__)
@@ -31,12 +32,28 @@ def analyze_url():
 
 @analyze.route('/check_status')
 def check_status():
-   status1 = "pending"
-   status2 = "pending"
-   status3 = "pending"
-   if os.path.exists("./seo_analyzer_app/utils/on_page_seo.json"): status1 = "done"
-   if os.path.exists("./seo_analyzer_app/utils/ranking_seo.json"): status2 = "done"
-   if os.path.exists("./seo_analyzer_app/utils/technical_seo.json"): status3 = "done"
+   status1, status2, status3 = "pending", "pending", "pending"
+   data1, data2, data3 = {}, {}, {}
+   
+   if os.path.exists("./seo_analyzer_app/utils/on_page_seo.json"):
+      status1 = "done"
+      with open("./seo_analyzer_app/utils/on_page_seo.json", "r", encoding="utf-8") as f: data1 = json.load(f)
+      os.remove(f"./seo_analyzer_app/utils/on_page_seo.json")
+      
+   if os.path.exists("./seo_analyzer_app/utils/ranking_seo.json"):
+      status2 = "done"
+      with open("./seo_analyzer_app/utils/ranking_seo.json", "r", encoding="utf-8") as f: data2 = json.load(f)
+      os.remove(f"./seo_analyzer_app/utils/ranking_seo.json")
+      
+   if os.path.exists("./seo_analyzer_app/utils/technical_seo.json"):
+      status3 = "done"
+      with open("./seo_analyzer_app/utils/technical_seo.json", "r", encoding="utf-8") as f: data3 = json.load(f)
+      os.remove(f"./seo_analyzer_app/utils/technical_seo.json")
+      
+   if all(status=="done" for status in [status1, status2, status3]):
+      with open("./seo_analyzer_app/data/recent_search.json", 'w', encoding="utf-8") as f:
+         json.dump({data1, data2, data3}, f, indent=3, ensure_ascii=False)
+         
    return {
       "task1": status1,
       "task2": status2,
