@@ -26,9 +26,3 @@ nav .nav-menu:hover{
    cursor: pointer;
    transition: all 0.2s;
 }
-.theme {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   gap: 5px;
-}
